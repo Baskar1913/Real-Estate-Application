@@ -128,6 +128,12 @@ CORS_ALLOWED_ORIGINS = [
     FRONTEND_URL,
 ]
 
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+    ".vercel.app",
+]
+
 CSRF_TRUSTED_ORIGINS = [
     FRONTEND_URL,
 ]
