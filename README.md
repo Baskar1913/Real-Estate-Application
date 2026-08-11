@@ -1,146 +1,292 @@
-# Real Estate Properties — Full-stack project
+# Real Estate Application
 
-A dynamic real-estate portal based on the supplied UI reference.
+## About the Project
 
-## Included
+The Real Estate Application is a full-stack web application developed to manage and explore residential and commercial properties. It provides public pages for viewing properties, projects, company information, and contact details. Registered users can authenticate securely, while administrators can manage the real-estate data displayed on the website. The application uses Django REST Framework to provide REST APIs, React with TypeScript for the user interface, and PostgreSQL for permanent data storage.
 
-- Django 5.2 REST API and Swagger
-- PostgreSQL configuration through `.env`
-- Nine requested content models plus dynamic Contact Information
-- Secure Django users with token authentication
-- Login, create account, logout, forgot password and reset password
-- Public Home page with centered User/Admin authentication popup for protected navigation
-- Shared responsive user/admin interface
-- Users can view and use the portal
-- Staff administrators can create, read, update and delete every content resource
-- Contact phone, email, address and map link are editable from React **Manage → Contact Details**
-- React 19 + TypeScript + Vite frontend
-- Image upload and media serving in development
-- Backend tests and frontend production build
+## Features
 
-No passwords or demo credentials are included.
+- User registration, login, logout, and password reset
+- Role-based access for customers and administrators
+- Property and project listings with detailed information
+- Management of categories, subcategories, locations, and amenities
+- About Us and Contact Us sections
+- Image upload support for properties and projects
+- Admin management interface
+- REST API documentation using Swagger
+- Responsive React user interface
 
-## 1. PostgreSQL database
+## Tools and Technologies
 
-Open pgAdmin, connect to your PostgreSQL server, right-click **Databases**, select **Create → Database**, and use:
+| Layer | Technology |
+| --- | --- |
+| Frontend | React, TypeScript, Vite, HTML, CSS |
+| API communication | Axios and HTTP REST APIs |
+| Backend | Python, Django, Django REST Framework |
+| Database | PostgreSQL |
+| API documentation | drf-spectacular and Swagger UI |
+| Authentication | Django authentication and token-based API access |
+| Version control | Git and GitHub |
 
-```text
-Database: realestate_db
-Owner: postgres
+## Software Requirements
+
+Install the following software before running the project:
+
+- Python 3.13 or a compatible Python 3 version
+- PostgreSQL and pgAdmin 4
+- Node.js and npm
+- Git
+- Visual Studio Code or another code editor
+
+Confirm that the required tools are installed:
+
+```bash
+python --version
+pip --version
+node --version
+npm --version
+git --version
 ```
 
-Alternatively, in PostgreSQL Query Tool:
+## Project Structure
+
+```text
+Real-Estate-Application/
+├── backend/
+│   ├── api/
+│   │   ├── migrations/
+│   │   ├── admin.py
+│   │   ├── models.py
+│   │   ├── permissions.py
+│   │   ├── serializers.py
+│   │   ├── tests.py
+│   │   ├── urls.py
+│   │   └── views.py
+│   ├── config/
+│   │   ├── settings.py
+│   │   ├── urls.py
+│   │   ├── asgi.py
+│   │   └── wsgi.py
+│   ├── sample_media/
+│   ├── .env.example
+│   ├── manage.py
+│   └── requirements.txt
+├── frontend/
+│   ├── public/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── context/
+│   │   ├── layouts/
+│   │   ├── pages/
+│   │   ├── services/
+│   │   └── types/
+│   ├── .env.example
+│   ├── package.json
+│   ├── package-lock.json
+│   └── vite.config.ts
+├── .gitignore
+└── README.md
+```
+
+## How the Application Is Connected
+
+The React frontend sends HTTP requests through Axios to the Django REST API. Django receives each request, validates and processes the data, and communicates with PostgreSQL through Django's Object-Relational Mapper (ORM). The API returns a JSON response, which React uses to update the interface.
+
+```text
+React frontend → Axios/HTTP → Django REST API → Django ORM → PostgreSQL
+```
+
+During local development, the services use these addresses:
+
+| Service | Local address |
+| --- | --- |
+| React frontend | `http://localhost:5173` |
+| Django backend | `http://127.0.0.1:8000` |
+| REST API | `http://127.0.0.1:8000/api/` |
+| Swagger UI | `http://127.0.0.1:8000/api/docs/` |
+| Django Admin | `http://127.0.0.1:8000/admin/` |
+| PostgreSQL | `localhost:5432` |
+
+## Installation and Setup
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/Baskar1913/Real-Estate-Application.git
+cd Real-Estate-Application
+```
+
+### 2. Create the PostgreSQL database
+
+Open pgAdmin 4 or PostgreSQL Query Tool and execute:
 
 ```sql
 CREATE DATABASE realestate_db;
 ```
 
-## 2. Backend setup on Windows
+Keep the PostgreSQL database name, username, password, host, and port available for the backend configuration.
 
-Open PowerShell in the extracted project:
+### 3. Set up the Django backend
 
-```powershell
+Open a terminal in the project root and enter the backend folder:
+
+```bash
 cd backend
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
-Copy-Item .env.example .env
 ```
 
-Open `backend\.env` and set your actual PostgreSQL values:
+Create a virtual environment:
+
+```bash
+python -m venv .venv
+```
+
+Activate it on Windows Command Prompt:
+
+```cmd
+.venv\Scripts\activate
+```
+
+For Windows PowerShell, use:
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
+
+Install the backend packages:
+
+```bash
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+### 4. Configure the backend environment
+
+Create `backend/.env` by copying `backend/.env.example`:
+
+```cmd
+copy .env.example .env
+```
+
+Update `.env` with your local PostgreSQL information:
 
 ```env
-DJANGO_SECRET_KEY=replace-with-a-long-random-secret
+DJANGO_SECRET_KEY=replace-with-a-long-random-secret-key
 DEBUG=True
 DB_NAME=realestate_db
 DB_USER=postgres
-DB_PASSWORD=your-actual-postgresql-password
+DB_PASSWORD=your-postgresql-password
 DB_HOST=localhost
 DB_PORT=5432
 FRONTEND_URL=http://localhost:5173
 USE_SQLITE=False
 ```
 
-Never commit or share `.env`.
+Do not upload `.env` to GitHub. Only `.env.example` should be committed.
 
-Run migrations and create the administrator:
+### 5. Apply database migrations
 
-```powershell
-python manage.py check
+Run these commands from the `backend` folder while the virtual environment is active:
+
+```bash
+python manage.py makemigrations
 python manage.py migrate
+```
+
+### 6. Create a Django administrator
+
+```bash
 python manage.py createsuperuser
 ```
 
-Use an `@ssintern.in` email for the superuser. The custom administrator login rejects every other email domain, and public registration always creates a normal user.
+Enter the requested username, email address, and password.
 
-Optional starter content:
+### 7. Test the backend configuration
 
-```powershell
-python manage.py seed_content
+```bash
+python manage.py check
+python manage.py test
 ```
 
-This creates a complete optional South Indian demo portfolio with coordinated original images, About content, categories, subcategories, locations, six properties, three projects, amenities and contact details. It never creates login credentials. The About banner also controls the Home hero image and can be replaced from **Manage → About Us**.
+### 8. Start the Django server
 
-The Properties, Projects and Contact Us pages include distinct panoramic header banners by default. Their frontend assets are stored in `frontend/public/banners/`; replace an image while keeping its filename to change that page banner without a database migration.
-
-Start Django:
-
-```powershell
+```bash
 python manage.py runserver
 ```
 
-Backend URLs:
+The backend will run at `http://127.0.0.1:8000`.
 
-- API home: `http://127.0.0.1:8000/`
-- Swagger: `http://127.0.0.1:8000/api/docs/`
-- Django Admin: `http://127.0.0.1:8000/admin/`
+### 9. Set up the React frontend
 
-Forgot Password uses a two-step development flow: first enter and verify the registered email; then enter and confirm the new password and click **Reset password**. No email link is generated.
+Keep the backend server running. Open a second terminal, return to the project root, and enter the frontend folder:
 
-## 3. Frontend setup
-
-Open a second PowerShell terminal:
-
-```powershell
+```bash
 cd frontend
-npm install
-Copy-Item .env.example .env
-npm run dev
 ```
 
-Open `http://localhost:5173`.
+Install the frontend packages:
 
-The frontend `.env` defaults are:
+```bash
+npm install
+```
+
+### 10. Configure the frontend environment
+
+Create `frontend/.env` from the example file:
+
+```cmd
+copy .env.example .env
+```
+
+Ensure it contains:
 
 ```env
 VITE_API_BASE_URL=http://127.0.0.1:8000/api
 VITE_BACKEND_URL=http://127.0.0.1:8000
 ```
 
-## Roles
+The first value connects Axios to the Django API. The second value is used when the frontend needs the backend base address, including media URLs.
 
-- Normal account: created through **Create account**; can browse and submit enquiries.
-- Admin account: provisioned internally with `python manage.py createsuperuser` using an `@ssintern.in` email; receives the **Manage** navigation and all CRUD controls. Public admin account creation is disabled.
-- The backend enforces these permissions. Hiding frontend buttons is not the security boundary.
+### 11. Start the React development server
 
-The Home page is public. The far-right header account icon opens a dropdown containing only **User** and **Admin**. Each choice opens a centered role-specific window. User login includes Create Account and Forgot Password; Admin login includes Forgot Password only. Opening About, Properties, Projects, Contact, detail pages, or management while signed out returns to Home and opens the user login window. Category selection filters the available subcategories in Home search, listing filters, and admin Property/Project forms. Contact edits refresh the footer immediately, and the Contact page displays the map URL as a matching Location row.
-
-## Verification
-
-Backend:
-
-```powershell
-python manage.py test
+```bash
+npm run dev
 ```
 
-Frontend:
+Open `http://localhost:5173` in the browser.
 
-```powershell
-npm run lint
-npm run build
+## Running the Project Later
+
+Use two terminals whenever you run the project.
+
+### Terminal 1 — Backend
+
+```cmd
+cd /d PATH_TO_PROJECT\Real-Estate-Application\backend
+.venv\Scripts\activate
+python manage.py runserver
 ```
 
-## Existing-backend note
+### Terminal 2 — Frontend
 
-This ZIP is complete and can run independently. If you connect the frontend to an older backend, its endpoint names and serializer fields must match those in `backend/api/urls.py` and `backend/api/serializers.py`.
+```cmd
+cd /d PATH_TO_PROJECT\Real-Estate-Application\frontend
+npm run dev
+```
+
+Replace `PATH_TO_PROJECT` with the actual folder location on your computer.
+
+## Git Workflow
+
+After modifying the project, use:
+
+```bash
+git add .
+git commit -m "Describe the changes"
+git push
+```
+
+Environment files, virtual environments, installed Node packages, runtime media, caches, and generated build files are excluded through `.gitignore`.
+
+## Conclusion
+
+This project demonstrates the development of a complete real-estate management platform using React, Django REST Framework, and PostgreSQL. React provides an interactive and responsive user experience, Django supplies secure APIs and business logic, and PostgreSQL stores structured application data permanently. The separation between frontend, backend, and database makes the application easier to maintain, test, extend, and deploy.
