@@ -1,0 +1,6 @@
+import { Award, BadgeCheck, Handshake } from "lucide-react";
+import { useEffect, useState } from "react";
+import api,{mediaUrl} from "../../services/api";
+import type { AboutRecord } from "../../types";
+export default function AboutPage(){const[data,setData]=useState<AboutRecord|null>(null);useEffect(()=>{void api.get<AboutRecord[]>("/about-us/").then(r=>setData(r.data[0]||null));},[]);return <><section className="page-banner about-banner" style={data?.banner?{backgroundImage:`linear-gradient(#10291ab8,#10291ab8),url(${mediaUrl(data.banner)})`}:{}}><div className="container"><span className="eyebrow">Who we are</span><h1>About Us</h1></div></section><section className="section container about-grid"><img src={mediaUrl(data?.image)} alt="Our real estate team"/><article><span className="eyebrow">About Real Estate Properties</span><h2>{data?.title1||"Helping you find the perfect property"}</h2><h3>{data?.title2||"Experience built on trust"}</h3><p>{data?.description||"We offer premium residential and commercial properties with complete transparency, professional guidance and dependable service."}</p><div className="mini-benefits"><span><BadgeCheck/>Verified properties</span><span><Award/>Experienced advisors</span><span><Handshake/>Transparent service</span></div></article></section></>}
+
