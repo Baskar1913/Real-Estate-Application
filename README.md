@@ -275,18 +275,6 @@ npm run dev
 
 Replace `PATH_TO_PROJECT` with the actual folder location on your computer.
 
-## Git Workflow
-
-After modifying the project, use:
-
-```bash
-git add .
-git commit -m "Describe the changes"
-git push
-```
-
-Environment files, virtual environments, installed Node packages, runtime media, caches, and generated build files are excluded through `.gitignore`.
-
 ## Conclusion
 
 This project demonstrates the development of a complete real-estate management platform using React, Django REST Framework, and PostgreSQL. React provides an interactive and responsive user experience, Django supplies secure APIs and business logic, and PostgreSQL stores structured application data permanently. The separation between frontend, backend, and database makes the application easier to maintain, test, extend, and deploy.
