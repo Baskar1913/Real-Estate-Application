@@ -1,14 +1,18 @@
 import os
 from pathlib import Path
-
+import dj_database_url
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "django-insecure-development-only")
-DEBUG = os.getenv("DEBUG", "True").lower() == "true"
-ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+DEBUG = os.getenv("DEBUG", "False").lower() == "true"
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+    ".onrender.com",
+]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -26,6 +30,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -52,7 +57,15 @@ TEMPLATES = [
 ]
 WSGI_APPLICATION = "config.wsgi.application"
 
-if os.getenv("USE_SQLITE", "False").lower() == "true":
+if os.getenv("DATABASE_URL"):
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=os.getenv("DATABASE_URL"),
+            conn_max_age=600,
+            ssl_require=True,
+        )
+    }
+elif os.getenv("USE_SQLITE", "False").lower() == "true":
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
@@ -83,9 +96,16 @@ TIME_ZONE = "Asia/Kolkata"
 USE_I18N = True
 USE_TZ = True
 STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
@@ -100,7 +120,14 @@ SPECTACULAR_SETTINGS = {
     "VERSION": "1.0.0",
 }
 
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
+
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    FRONTEND_URL,
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    FRONTEND_URL,
 ]
