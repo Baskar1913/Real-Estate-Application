@@ -4,6 +4,10 @@
 
 The Real Estate Application is a full-stack web application developed to manage and explore residential and commercial properties. It provides public pages for viewing properties, projects, company information, and contact details. Registered users can authenticate securely, while administrators can manage the real-estate data displayed on the website. The application uses Django REST Framework to provide REST APIs, React with TypeScript for the user interface, and PostgreSQL for permanent data storage.
 
+## Explore the UI
+
+[View the deployed application](https://real-estate-application-g746rcbci-baskar-ms-projects.vercel.app/)
+
 ## Features
 
 - User registration, login, logout, and password reset
